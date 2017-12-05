@@ -9,8 +9,7 @@ The repo consists of some folders. One of them is the actual projcet, and the ot
 ## Opening/Importing A Folder
 Use [IntelliJ IDEA](https://www.jetbrains.com/idea/).
 
-([Source of the below instructions](https://github.com/libgdx/libgdx/wiki/Gradle-and-Intellij-IDEA))
-
+([Source of the below instructions](https://github.com/libgdx/libgdx/wiki/Gradle-and-Intellij-IDEA))  
 [Instructions for Eclipse](https://github.com/libgdx/libgdx/wiki/Gradle-and-Eclipse) (IntelliJ is better though...)
 
 ### Opening for the first time:

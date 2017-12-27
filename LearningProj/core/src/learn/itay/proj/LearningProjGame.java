@@ -26,6 +26,7 @@ public class LearningProjGame extends ApplicationAdapter {
         GameInput.update();
         gameObject.updatePosition();
         gameObject.draw(batch);
+        TextManager.draw(batch, "X: " + gameObject.getX() + " Y: " + gameObject.getY(), 10, 20);
 
         batch.end();
     }

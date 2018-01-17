@@ -1,32 +1,26 @@
 package com.itay347.finaldays.Actors;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 
 public class MyActor extends Actor {
 
-    Sprite sprite;
+    TextureRegion textureRegion;
 
-    public MyActor() {
-        super();
-        sprite = new Sprite(new Texture(Gdx.files.internal("badlogic.jpg")));
+    public MyActor(Texture texture) {
+        textureRegion = new TextureRegion(texture);
+        setSize(textureRegion.getRegionWidth(), textureRegion.getRegionHeight());
     }
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
-        super.draw(batch, parentAlpha);
-        sprite.draw(batch, parentAlpha);
+        batch.draw(textureRegion, getX(), getY(), getOriginX(), getOriginY(), getWidth(), getHeight(), getScaleX(), getScaleY(), getRotation());
     }
 
     @Override
     public void act(float delta) {
         super.act(delta);
-    }
-
-    public Sprite getSprite() {
-        return sprite;
     }
 }

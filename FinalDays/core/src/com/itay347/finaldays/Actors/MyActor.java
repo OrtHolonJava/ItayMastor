@@ -4,14 +4,16 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.itay347.finaldays.GameInput;
 
 public class MyActor extends Actor {
-
-    TextureRegion textureRegion;
+    private TextureRegion textureRegion;
+    private float speed;
 
     public MyActor(Texture texture) {
         textureRegion = new TextureRegion(texture);
         setSize(textureRegion.getRegionWidth(), textureRegion.getRegionHeight());
+        speed = 2.5f;
     }
 
     @Override
@@ -22,5 +24,8 @@ public class MyActor extends Actor {
     @Override
     public void act(float delta) {
         super.act(delta);
+
+        GameInput.update();
+        setPosition(getX() + GameInput.KeyForce.x * speed, getY() + GameInput.KeyForce.y * speed);
     }
 }

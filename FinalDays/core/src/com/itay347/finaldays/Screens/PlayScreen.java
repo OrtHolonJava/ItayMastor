@@ -1,8 +1,6 @@
 package com.itay347.finaldays.Screens;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.ScreenAdapter;
-import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
+import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -10,6 +8,7 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.itay347.finaldays.Actors.MyActor;
 import com.itay347.finaldays.FinalDays;
@@ -23,6 +22,7 @@ public class PlayScreen extends ScreenAdapter {
     private TiledMap tiledMap;
     private TiledMapRenderer tiledMapRenderer;
     private MyActor tempActor;
+    private Vector2 moveDirection;
 
     public PlayScreen(FinalDays game) {
         this.game = game;
@@ -43,7 +43,8 @@ public class PlayScreen extends ScreenAdapter {
         stage = new Stage();
         tempActor = new MyActor((Texture) game.getAssetManager().get(TEMP_IMAGE));
         stage.addActor(tempActor);
-        Gdx.input.setInputProcessor(stage);
+
+        initInputProcessor();
     }
 
     @Override
@@ -71,5 +72,51 @@ public class PlayScreen extends ScreenAdapter {
     public void dispose() {
         stage.dispose();
         tiledMap.dispose();
+    }
+
+    private void initInputProcessor() {
+        InputMultiplexer multiplexer = new InputMultiplexer();
+        // TODO: add the uiStage to the multiplexer
+//        multiplexer.addProcessor(new InputAdapter() {
+//            @Override
+//            public boolean keyDown(int keycode) {
+//                switch (keycode) {
+//                    case Input.Keys.W:
+//                        moveDirection.y = 1;
+//                        return true;
+//                    case Input.Keys.A:
+//
+//                        return true;
+//                    case Input.Keys.S:
+//
+//                        return true;
+//                    case Input.Keys.D:
+//
+//                        return true;
+//                }
+//                return false;
+//            }
+//
+//            @Override
+//            public boolean keyUp(int keycode) {
+//                switch (keycode) {
+//                    case Input.Keys.W:
+//
+//                        break;
+//                    case Input.Keys.A:
+//
+//                        break;
+//                    case Input.Keys.S:
+//
+//                        break;
+//                    case Input.Keys.D:
+//
+//                        break;
+//                }
+//                return true;
+//            }
+//        });
+        multiplexer.addProcessor(stage);
+        Gdx.input.setInputProcessor(multiplexer);
     }
 }

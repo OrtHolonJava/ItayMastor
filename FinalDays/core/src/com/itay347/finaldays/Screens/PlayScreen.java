@@ -10,7 +10,7 @@ import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.itay347.finaldays.Actors.MyActor;
+import com.itay347.finaldays.Actors.Player;
 import com.itay347.finaldays.FinalDays;
 
 public class PlayScreen extends ScreenAdapter {
@@ -21,7 +21,7 @@ public class PlayScreen extends ScreenAdapter {
     private Stage stage;
     private TiledMap tiledMap;
     private TiledMapRenderer tiledMapRenderer;
-    private MyActor tempActor;
+    private Player player;
     private Vector2 moveDirection;
 
     public PlayScreen(FinalDays game) {
@@ -41,8 +41,8 @@ public class PlayScreen extends ScreenAdapter {
         tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap);
 
         stage = new Stage();
-        tempActor = new MyActor((Texture) game.getAssetManager().get(TEMP_IMAGE));
-        stage.addActor(tempActor);
+        player = new Player((Texture) game.getAssetManager().get(TEMP_IMAGE));
+        stage.addActor(player);
 
         initInputProcessor();
     }

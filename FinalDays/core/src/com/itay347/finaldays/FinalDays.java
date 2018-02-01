@@ -1,6 +1,8 @@
 package com.itay347.finaldays;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.itay347.finaldays.Screens.PlayScreen;
 
@@ -10,6 +12,7 @@ public class FinalDays extends Game {
 
 	@Override
 	public void create() {
+        Gdx.app.setLogLevel(Application.LOG_DEBUG);
         assetManager = new AssetManager();
 		setScreen(new PlayScreen(this));
 	}

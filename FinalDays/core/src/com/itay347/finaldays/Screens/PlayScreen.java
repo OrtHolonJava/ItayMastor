@@ -56,6 +56,10 @@ public class PlayScreen extends ScreenAdapter {
 
         // update the stage
         stage.act(Math.min(delta, 1 / 30f));
+        // TODO: Make the camera move smoother
+        // Move the camera above the player
+        stage.getCamera().position.set(player.getX() + player.getWidth() / 2,
+                player.getY() + player.getHeight() / 2, 0);
         // draw the map
         tiledMapRenderer.setView((OrthographicCamera) stage.getCamera());
         tiledMapRenderer.render();

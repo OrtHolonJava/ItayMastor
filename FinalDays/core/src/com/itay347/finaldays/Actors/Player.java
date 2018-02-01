@@ -12,10 +12,11 @@ public class Player extends BasicActor {
 
     public Player(Texture texture) {
         super(texture);
+        setSize(getWidth() / 4, getHeight() / 4);
         velocity = Vector2.Zero;
         maxSpeed = 2.5f;
         maxVelocity = GameInput.KeyForce.cpy().scl(maxSpeed);
-        Gdx.app.debug("Player contructor", "max velocity" + maxVelocity.toString());
+        Gdx.app.debug("Player constructor", "max velocity" + maxVelocity.toString());
         timeToMaxSpeed = 0.5f;
     }
 

@@ -15,7 +15,7 @@ import com.itay347.finaldays.FinalDays;
 
 public class PlayScreen extends ScreenAdapter {
     public static final String MAP_FILE_NAME = "Maps\\FinalDaysMap.tmx";
-    public static final String TEMP_IMAGE = "badlogic.jpg";
+    public static final String PLAYER_IMAGE = "survivor-move_handgun_0.png";
     private FinalDays game;
 
     private Stage stage;
@@ -26,8 +26,8 @@ public class PlayScreen extends ScreenAdapter {
 
     public PlayScreen(FinalDays game) {
         this.game = game;
-        game.getAssetManager().load(TEMP_IMAGE, Texture.class);
-        game.getAssetManager().finishLoadingAsset(TEMP_IMAGE);
+        game.getAssetManager().load(PLAYER_IMAGE, Texture.class);
+        game.getAssetManager().finishLoadingAsset(PLAYER_IMAGE);
 
 //        // only needed once
 //        game.getAssetManager().setLoader(TiledMap.class, new TmxMapLoader());
@@ -41,7 +41,7 @@ public class PlayScreen extends ScreenAdapter {
         tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap);
 
         stage = new Stage();
-        player = new Player((Texture) game.getAssetManager().get(TEMP_IMAGE));
+        player = new Player((Texture) game.getAssetManager().get(PLAYER_IMAGE));
         stage.addActor(player);
 
         initInputProcessor();

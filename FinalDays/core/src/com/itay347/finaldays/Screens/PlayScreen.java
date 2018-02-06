@@ -9,6 +9,8 @@ import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
+import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.itay347.finaldays.Actors.Player;
 import com.itay347.finaldays.FinalDays;
@@ -18,9 +20,13 @@ public class PlayScreen extends ScreenAdapter {
     public static final String PLAYER_IMAGE = "survivor-move_handgun_0.png";
     private FinalDays game;
 
-    private Stage stage;
     private TiledMap tiledMap;
     private TiledMapRenderer tiledMapRenderer;
+
+    private World world;
+    private Box2DDebugRenderer box2DDebugRenderer;
+
+    private Stage stage;
     private Player player;
     private Vector2 moveDirection;
 
@@ -37,9 +43,15 @@ public class PlayScreen extends ScreenAdapter {
 //        tiledMap = game.getAssetManager().get(MAP_FILE_NAME);
 //        tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap);
 
+        // Load the tiled map
         tiledMap = new TmxMapLoader().load(MAP_FILE_NAME);
         tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap);
 
+        // Init the Box2D World
+        world = new World(Vector2.Zero, false); // TODO: maybe change doSleep for better performance
+        box2DDebugRenderer = new Box2DDebugRenderer(true, true, true, true, true, true);
+
+        // Init the Stage and add the player
         stage = new Stage();
         player = new Player((Texture) game.getAssetManager().get(PLAYER_IMAGE));
         stage.addActor(player);
@@ -63,8 +75,12 @@ public class PlayScreen extends ScreenAdapter {
         // draw the map
         tiledMapRenderer.setView((OrthographicCamera) stage.getCamera());
         tiledMapRenderer.render();
-        // draw the stage
+
+        // draw the stage (player and enemies)
         stage.draw();
+
+        // render box2D Debug
+        box2DDebugRenderer.render(world, stage.getCamera().combined);
     }
 
     @Override
@@ -74,8 +90,9 @@ public class PlayScreen extends ScreenAdapter {
 
     @Override
     public void dispose() {
-        stage.dispose();
         tiledMap.dispose();
+        world.dispose();
+        stage.dispose();
     }
 
     private void initInputProcessor() {

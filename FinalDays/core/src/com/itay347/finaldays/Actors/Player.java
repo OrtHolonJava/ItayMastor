@@ -42,6 +42,5 @@ public class Player extends BasicActor {
         }
         velocity.clamp(0, maxSpeed);
         setPosition(getX() + velocity.x, getY() + velocity.y);
-        //setPosition(getX() + GameInput.KeyForce.x * maxSpeed, getY() + GameInput.KeyForce.y * maxSpeed);
     }
 }

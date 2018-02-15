@@ -1,12 +1,11 @@
 package com.itay347.finaldays.Screens;
 
 import com.badlogic.gdx.*;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.maps.tiled.TiledMap;
-import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
-import com.badlogic.gdx.maps.tiled.TmxMapLoader;
+import com.badlogic.gdx.maps.tiled.*;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
@@ -45,6 +44,10 @@ public class PlayScreen extends ScreenAdapter {
 
         // Load the tiled map
         tiledMap = new TmxMapLoader().load(MAP_FILE_NAME);
+        // TODO: Use this for collision making
+//        ((TiledMapTileLayer)tiledMap.getLayers().get(0)).getCell(0, 0).setTile(tiledMap.getTileSets().getTile(10));
+        Gdx.app.debug("Does have collision", ((TiledMapTileLayer)tiledMap.getLayers().get(0))
+                .getCell(16, 16).getTile().getProperties().containsKey("Collision") ? "True" : "False");
         tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap);
 
         // Init the Box2D World
@@ -72,6 +75,8 @@ public class PlayScreen extends ScreenAdapter {
         // Move the camera above the player
         stage.getCamera().position.set(player.getX() + player.getWidth() / 2,
                 player.getY() + player.getHeight() / 2, 0);
+        // TODO: zoom in and out properly
+        ((OrthographicCamera)stage.getCamera()).zoom = 0.5f;
         // draw the map
         tiledMapRenderer.setView((OrthographicCamera) stage.getCamera());
         tiledMapRenderer.render();

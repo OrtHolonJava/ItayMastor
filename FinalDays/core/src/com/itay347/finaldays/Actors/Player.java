@@ -12,11 +12,11 @@ public class Player extends BasicActor {
 
     public Player(Texture texture) {
         super(texture);
-        setSize(getWidth() / 4, getHeight() / 4);
+        setSize(getWidth() / 6, getHeight() / 6);
         velocity = Vector2.Zero;
         maxSpeed = 2.5f;
         maxVelocity = GameInput.KeyForce.cpy().scl(maxSpeed);
-        Gdx.app.debug("Player constructor", "max velocity" + maxVelocity.toString());
+//        Gdx.app.debug("Player constructor", "max velocity" + maxVelocity.toString());
         timeToMaxSpeed = 0.5f;
     }
 
@@ -24,21 +24,21 @@ public class Player extends BasicActor {
     public void act(float delta) {
         super.act(delta);
 
-        Gdx.app.debug("Player", "acting");
+//        Gdx.app.debug("Player", "acting");
 
         GameInput.update();
         if (GameInput.KeyPressed) {
             maxVelocity = GameInput.KeyForce.cpy().scl(maxSpeed);
             velocity.mulAdd(maxVelocity, delta / timeToMaxSpeed);
-            Gdx.app.debug("Player movement", "key pressed, velocity = " + velocity.toString());
+//            Gdx.app.debug("Player movement", "key pressed, velocity = " + velocity.toString());
         } else {
             velocity.mulAdd(velocity, -delta / timeToMaxSpeed);
             if (Math.abs(velocity.x) < 0.1 && Math.abs(velocity.y) < 0.1) {
                 velocity.x = 0;
                 velocity.y = 0;
-                Gdx.app.debug("Player movement", "set velocity to ZERO");
+//                Gdx.app.debug("Player movement", "set velocity to ZERO");
             }
-            Gdx.app.debug("Player movement", "not pressed, velocity = " + velocity.toString());
+//            Gdx.app.debug("Player movement", "not pressed, velocity = " + velocity.toString());
         }
         velocity.clamp(0, maxSpeed);
         setPosition(getX() + velocity.x, getY() + velocity.y);

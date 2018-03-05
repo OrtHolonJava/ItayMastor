@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.maps.tiled.*;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -30,12 +31,18 @@ public class PlayScreen extends ScreenAdapter {
     private Player player;
     private Vector2 keyPressDirection;
 
+    private Vector2 previousVelocity;
+
+    private boolean drawBox2DDebug;
+
     public PlayScreen(FinalDays game) {
         this.game = game;
         game.getAssetManager().load(PLAYER_IMAGE, Texture.class);
         game.getAssetManager().finishLoadingAsset(PLAYER_IMAGE);
 
+        drawBox2DDebug = true;
         keyPressDirection = Vector2.Zero;
+        previousVelocity = null;
 
 //        // only needed once
 //        game.getAssetManager().setLoader(TiledMap.class, new TmxMapLoader());
@@ -76,11 +83,24 @@ public class PlayScreen extends ScreenAdapter {
 
         GameInput.update();
         if (GameInput.KeyPressed) {
-            Gdx.app.debug("keypress", "Applying force: " + GameInput.KeyForce);
-            playerBody.applyForceToCenter(GameInput.KeyForce.cpy().scl(2.5f), true);
+//            Gdx.app.debug("keypress", "Applying force: " + GameInput.KeyForce);
+//            playerBody.applyForceToCenter(GameInput.KeyForce.cpy().scl(100000f), true);
+
+            Gdx.app.debug("keypress", "Applying impulse: " + GameInput.KeyForce);
+            playerBody.applyLinearImpulse(GameInput.KeyForce.cpy().scl(20000), playerBody.getWorldCenter(), true);
         }
-        world.step(Math.min(delta, 1 / 30f), 10, 5);
+        // TODO: Friction
+        if (previousVelocity != null)
+        {
+            // Unnecessary
+//            Vector2 acceleration = playerBody.getLinearVelocity().cpy().sub(previousVelocity).scl(1f / delta);
+            playerBody.applyForceToCenter(playerBody.getLinearVelocity().cpy().scl(-1, -1).scl(5000), true);
+        }
+
+        world.step(Math.min(delta, 1 / 30f), 6, 2);
         player.setPosition(playerBody.getPosition().x, playerBody.getPosition().y, Align.center);
+
+        previousVelocity = playerBody.getLinearVelocity();
 
         // update the stage
 //        stage.act(Math.min(delta, 1 / 30f));
@@ -98,7 +118,11 @@ public class PlayScreen extends ScreenAdapter {
         stage.draw();
 
         // render box2D Debug
-        box2DDebugRenderer.render(world, stage.getCamera().combined);
+        if (drawBox2DDebug) {
+            box2DDebugRenderer.render(world, stage.getCamera().combined);
+        }
+
+
     }
 
     @Override
@@ -114,6 +138,8 @@ public class PlayScreen extends ScreenAdapter {
     }
 
     private void createPlayerBody() {
+        // TODO: Move to BasicActor
+
         // Now create a BodyDefinition.  This defines the physics objects type
         //and position in the simulation
         BodyDef bodyDef = new BodyDef();
@@ -127,11 +153,10 @@ public class PlayScreen extends ScreenAdapter {
         playerBody = world.createBody(bodyDef);
 
         // Now define the dimensions of the physics shape
-        PolygonShape shape = new PolygonShape();
-        // We are a box, so this makes sense, no?
-        // Basically set the physics polygon to a box with the same dimensions
-        // as our sprite
-        shape.setAsBox(player.getWidth() / 2, player.getHeight() / 2);
+        CircleShape shape = new CircleShape();
+        shape.setRadius(Math.min(player.getWidth() / 2, player.getHeight() / 2) * 0.8f);
+//        PolygonShape shape = new PolygonShape();
+//        shape.setAsBox(player.getWidth() / 2, player.getHeight() / 2);
 
         // FixtureDef is a confusing expression for physical properties
         // Basically this is where you, in addition to defining the shape of the
@@ -193,6 +218,16 @@ public class PlayScreen extends ScreenAdapter {
 //            }
 //        });
         //multiplexer.addProcessor(stage);
+        multiplexer.addProcessor(new InputAdapter() {
+            @Override
+            public boolean keyDown(int keycode) {
+                if (keycode == Input.Keys.NUMPAD_0) {
+                    drawBox2DDebug = !drawBox2DDebug;
+                    return true;
+                }
+                return false;
+            }
+        });
         Gdx.input.setInputProcessor(multiplexer);
     }
 }

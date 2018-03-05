@@ -1,7 +1,6 @@
 package com.itay347.finaldays.Screens;
 
 import com.badlogic.gdx.*;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -10,8 +9,10 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.utils.Align;
 import com.itay347.finaldays.Actors.Player;
 import com.itay347.finaldays.FinalDays;
+import com.itay347.finaldays.GameInput;
 
 public class PlayScreen extends ScreenAdapter {
     public static final String MAP_FILE_NAME = "Maps\\FinalDaysMap.tmx";
@@ -27,12 +28,14 @@ public class PlayScreen extends ScreenAdapter {
 
     private Stage stage;
     private Player player;
-    private Vector2 moveDirection;
+    private Vector2 keyPressDirection;
 
     public PlayScreen(FinalDays game) {
         this.game = game;
         game.getAssetManager().load(PLAYER_IMAGE, Texture.class);
         game.getAssetManager().finishLoadingAsset(PLAYER_IMAGE);
+
+        keyPressDirection = Vector2.Zero;
 
 //        // only needed once
 //        game.getAssetManager().setLoader(TiledMap.class, new TmxMapLoader());
@@ -71,8 +74,16 @@ public class PlayScreen extends ScreenAdapter {
         Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
+        GameInput.update();
+        if (GameInput.KeyPressed) {
+            Gdx.app.debug("keypress", "Applying force: " + GameInput.KeyForce);
+            playerBody.applyForceToCenter(GameInput.KeyForce.cpy().scl(2.5f), true);
+        }
+        world.step(Math.min(delta, 1 / 30f), 10, 5);
+        player.setPosition(playerBody.getPosition().x, playerBody.getPosition().y, Align.center);
+
         // update the stage
-        stage.act(Math.min(delta, 1 / 30f));
+//        stage.act(Math.min(delta, 1 / 30f));
         // TODO: Make the camera move smoother
         // Move the camera above the player
         stage.getCamera().position.set(player.getX() + player.getWidth() / 2,
@@ -147,16 +158,16 @@ public class PlayScreen extends ScreenAdapter {
 //            public boolean keyDown(int keycode) {
 //                switch (keycode) {
 //                    case Input.Keys.W:
-//                        moveDirection.y = 1;
+//                        keyPressDirection.y = 1;
 //                        return true;
 //                    case Input.Keys.A:
-//
+//                        keyPressDirection.x = -1;
 //                        return true;
 //                    case Input.Keys.S:
-//
+//                        keyPressDirection.y = -1;
 //                        return true;
 //                    case Input.Keys.D:
-//
+//                        keyPressDirection.x = 1;
 //                        return true;
 //                }
 //                return false;
@@ -166,22 +177,22 @@ public class PlayScreen extends ScreenAdapter {
 //            public boolean keyUp(int keycode) {
 //                switch (keycode) {
 //                    case Input.Keys.W:
-//
+//                        keyPressDirection.y = 0;
 //                        break;
 //                    case Input.Keys.A:
-//
+//                        keyPressDirection.x = 0;
 //                        break;
 //                    case Input.Keys.S:
-//
+//                        keyPressDirection.y = 0;
 //                        break;
 //                    case Input.Keys.D:
-//
+//                        keyPressDirection.x = 0;
 //                        break;
 //                }
 //                return true;
 //            }
 //        });
-        multiplexer.addProcessor(stage);
+        //multiplexer.addProcessor(stage);
         Gdx.input.setInputProcessor(multiplexer);
     }
 }

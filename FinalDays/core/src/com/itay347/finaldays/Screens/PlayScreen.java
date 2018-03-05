@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.maps.tiled.*;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -56,8 +57,10 @@ public class PlayScreen extends ScreenAdapter {
         tiledMap = new TmxMapLoader().load(MAP_FILE_NAME);
         // TODO: Use this for collision making
 //        ((TiledMapTileLayer)tiledMap.getLayers().get(0)).getCell(0, 0).setTile(tiledMap.getTileSets().getTile(10));
-        Gdx.app.debug("Does have collision", ((TiledMapTileLayer) tiledMap.getLayers().get(0))
-                .getCell(16, 16).getTile().getProperties().containsKey("Collision") ? "True" : "False");
+//        Gdx.app.debug("Does have collision", ((TiledMapTileLayer) tiledMap.getLayers().get(0))
+//                .getCell(16, 16).getTile().getProperties().containsKey("Collision") ? "True" : "False");
+
+
         tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap);
 
         // Init the Box2D World
@@ -69,6 +72,7 @@ public class PlayScreen extends ScreenAdapter {
         player = new Player((Texture) game.getAssetManager().get(PLAYER_IMAGE));
         stage.addActor(player);
 
+        createWallColliders();
         createPlayerBody();
 
         initInputProcessor();
@@ -86,12 +90,11 @@ public class PlayScreen extends ScreenAdapter {
 //            Gdx.app.debug("keypress", "Applying force: " + GameInput.KeyForce);
 //            playerBody.applyForceToCenter(GameInput.KeyForce.cpy().scl(100000f), true);
 
-            Gdx.app.debug("keypress", "Applying impulse: " + GameInput.KeyForce);
+//            Gdx.app.debug("keypress", "Applying impulse: " + GameInput.KeyForce);
             playerBody.applyLinearImpulse(GameInput.KeyForce.cpy().scl(20000), playerBody.getWorldCenter(), true);
         }
-        // TODO: Friction
-        if (previousVelocity != null)
-        {
+        // Friction
+        if (previousVelocity != null) {
             // Unnecessary
 //            Vector2 acceleration = playerBody.getLinearVelocity().cpy().sub(previousVelocity).scl(1f / delta);
             playerBody.applyForceToCenter(playerBody.getLinearVelocity().cpy().scl(-1, -1).scl(5000), true);
@@ -104,7 +107,7 @@ public class PlayScreen extends ScreenAdapter {
 
         // update the stage
 //        stage.act(Math.min(delta, 1 / 30f));
-        // TODO: Make the camera move smoother
+        // TODO: maybe Make the camera move smoother
         // Move the camera above the player
         stage.getCamera().position.set(player.getX() + player.getWidth() / 2,
                 player.getY() + player.getHeight() / 2, 0);
@@ -137,8 +140,33 @@ public class PlayScreen extends ScreenAdapter {
         stage.dispose();
     }
 
+    private void createWallColliders() {
+        // Adding bodies to the walls
+        TiledMapTileLayer mapLayer = (TiledMapTileLayer) tiledMap.getLayers().get(0);
+        int tileSize = tiledMap.getProperties().get("tilewidth", Integer.class);
+
+        BodyDef bodyDef = new BodyDef();
+        bodyDef.type = BodyDef.BodyType.StaticBody;
+
+        PolygonShape shape = new PolygonShape();
+        shape.setAsBox(tileSize / 2, tileSize / 2);
+        FixtureDef fixtureDef = new FixtureDef();
+        fixtureDef.shape = shape;
+        fixtureDef.density = 1f;
+        for (int y = 0; y < mapLayer.getHeight(); y++) {
+            for (int x = 0; x < mapLayer.getWidth(); x++) {
+                if (mapLayer.getCell(x, y).getTile().getProperties().containsKey("Collision")) {
+                    bodyDef.position.set(tileSize * x + tileSize / 2, tileSize * y + tileSize / 2);
+                    Body body = world.createBody(bodyDef);
+                    body.createFixture(fixtureDef);
+                }
+            }
+        }
+        shape.dispose();
+    }
+
     private void createPlayerBody() {
-        // TODO: Move to BasicActor
+        // TODO: Move this to BasicActor
 
         // Now create a BodyDefinition.  This defines the physics objects type
         //and position in the simulation

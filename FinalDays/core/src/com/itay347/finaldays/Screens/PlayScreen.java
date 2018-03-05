@@ -8,8 +8,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.maps.tiled.*;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
-import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.itay347.finaldays.Actors.Player;
 import com.itay347.finaldays.FinalDays;
@@ -24,6 +23,7 @@ public class PlayScreen extends ScreenAdapter {
 
     private World world;
     private Box2DDebugRenderer box2DDebugRenderer;
+    private Body playerBody;
 
     private Stage stage;
     private Player player;
@@ -46,7 +46,7 @@ public class PlayScreen extends ScreenAdapter {
         tiledMap = new TmxMapLoader().load(MAP_FILE_NAME);
         // TODO: Use this for collision making
 //        ((TiledMapTileLayer)tiledMap.getLayers().get(0)).getCell(0, 0).setTile(tiledMap.getTileSets().getTile(10));
-        Gdx.app.debug("Does have collision", ((TiledMapTileLayer)tiledMap.getLayers().get(0))
+        Gdx.app.debug("Does have collision", ((TiledMapTileLayer) tiledMap.getLayers().get(0))
                 .getCell(16, 16).getTile().getProperties().containsKey("Collision") ? "True" : "False");
         tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap);
 
@@ -58,6 +58,8 @@ public class PlayScreen extends ScreenAdapter {
         stage = new Stage();
         player = new Player((Texture) game.getAssetManager().get(PLAYER_IMAGE));
         stage.addActor(player);
+
+        createPlayerBody();
 
         initInputProcessor();
     }
@@ -76,7 +78,7 @@ public class PlayScreen extends ScreenAdapter {
         stage.getCamera().position.set(player.getX() + player.getWidth() / 2,
                 player.getY() + player.getHeight() / 2, 0);
         // TODO: zoom in and out properly
-        ((OrthographicCamera)stage.getCamera()).zoom = 0.5f;
+        ((OrthographicCamera) stage.getCamera()).zoom = 0.5f;
         // draw the map
         tiledMapRenderer.setView((OrthographicCamera) stage.getCamera());
         tiledMapRenderer.render();
@@ -98,6 +100,43 @@ public class PlayScreen extends ScreenAdapter {
         tiledMap.dispose();
         world.dispose();
         stage.dispose();
+    }
+
+    private void createPlayerBody() {
+        // Now create a BodyDefinition.  This defines the physics objects type
+        //and position in the simulation
+        BodyDef bodyDef = new BodyDef();
+        bodyDef.type = BodyDef.BodyType.DynamicBody;
+        // We are going to use 1 to 1 dimensions.  Meaning 1 in physics engine
+        // is 1 pixel
+        // Set our body to the same position as our sprite
+        bodyDef.position.set(player.getX() + player.getWidth() / 2, player.getY() + player.getWidth() / 2);
+
+        // Create a body in the world using our definition
+        playerBody = world.createBody(bodyDef);
+
+        // Now define the dimensions of the physics shape
+        PolygonShape shape = new PolygonShape();
+        // We are a box, so this makes sense, no?
+        // Basically set the physics polygon to a box with the same dimensions
+        // as our sprite
+        shape.setAsBox(player.getWidth() / 2, player.getHeight() / 2);
+
+        // FixtureDef is a confusing expression for physical properties
+        // Basically this is where you, in addition to defining the shape of the
+        // body
+        // you also define it's properties like density, restitution and others
+        // we will see shortly
+        // If you are wondering, density and area are used to calculate over all
+        // mass
+        FixtureDef fixtureDef = new FixtureDef();
+        fixtureDef.shape = shape;
+        fixtureDef.density = 1f;
+
+        Fixture fixture = playerBody.createFixture(fixtureDef);
+
+        // Shape is the only disposable of the lot, so get rid of it
+        shape.dispose();
     }
 
     private void initInputProcessor() {

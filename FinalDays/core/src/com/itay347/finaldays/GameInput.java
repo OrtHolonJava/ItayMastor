@@ -6,6 +6,7 @@ import com.badlogic.gdx.math.Vector2;
 
 public class GameInput {
     public static Vector2 KeyForce = new Vector2();
+    // TODO: maybe replace KeyPressed with a (KeyForce == 0) type of method
     public static boolean KeyPressed = false;
 
     public static void update() {

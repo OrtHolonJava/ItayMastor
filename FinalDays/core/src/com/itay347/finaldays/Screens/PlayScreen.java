@@ -1,23 +1,19 @@
 package com.itay347.finaldays.Screens;
 
+import box2dLight.RayHandler;
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.maps.tiled.*;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
-import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.utils.Align;
-import com.badlogic.gdx.utils.Array;
 import com.itay347.finaldays.Actors.BasicActor;
 import com.itay347.finaldays.Actors.Player;
 import com.itay347.finaldays.FinalDays;
-import com.itay347.finaldays.GameInput;
 
 public class PlayScreen extends ScreenAdapter {
     public static final String MAP_FILE_NAME = "Maps\\FinalDaysMap.tmx";
@@ -30,6 +26,8 @@ public class PlayScreen extends ScreenAdapter {
     private World world;
     private Box2DDebugRenderer box2DDebugRenderer;
     private boolean drawBox2DDebug;
+    private RayHandler rayHandler;
+    private boolean enableLights;
 
     private Stage stage;
     private Player player;
@@ -40,6 +38,7 @@ public class PlayScreen extends ScreenAdapter {
         game.getAssetManager().finishLoadingAsset(PLAYER_IMAGE);
 
         drawBox2DDebug = false;
+        enableLights = true;
 
         // Load the tiled map
         tiledMap = new TmxMapLoader().load(MAP_FILE_NAME);
@@ -49,9 +48,19 @@ public class PlayScreen extends ScreenAdapter {
         world = new World(Vector2.Zero, false); // TODO: maybe change doSleep for better(?) performance
         box2DDebugRenderer = new Box2DDebugRenderer(true, true, true, true, true, true);
 
+        // Init the RayHandler for the lights
+        rayHandler = new RayHandler(world);
+        RayHandler.setGammaCorrection(true);     // enable or disable gamma correction
+        RayHandler.useDiffuseLight(true);        // enable or disable diffused lighting
+        rayHandler.setBlur(true);                // enabled or disable blur
+        rayHandler.setBlurNum(5);                // set number of gaussian blur passes
+        rayHandler.setShadows(true);             // enable or disable shadow
+        rayHandler.setCulling(true);             // enable or disable culling
+        rayHandler.setAmbientLight(0f);          // set default ambient light
+
         // Init the Stage and add the player
         stage = new Stage();
-        player = new Player((Texture) game.getAssetManager().get(PLAYER_IMAGE), world);
+        player = new Player((Texture) game.getAssetManager().get(PLAYER_IMAGE), world, rayHandler);
         stage.addActor(player);
         // TODO: Add the enemy AI actors
 
@@ -68,13 +77,13 @@ public class PlayScreen extends ScreenAdapter {
 
         float myDelta = Math.min(delta, 1 / 30f);
 
-        for (Actor actor : stage.getActors() ) {
+        for (Actor actor : stage.getActors()) {
             if (actor instanceof BasicActor) {
                 ((BasicActor) actor).updateBody();
             }
         }
         world.step(myDelta, 6, 2);
-        for (Actor actor : stage.getActors() ) {
+        for (Actor actor : stage.getActors()) {
             if (actor instanceof BasicActor) {
                 ((BasicActor) actor).updateAfterWorldStep();
             }
@@ -99,6 +108,12 @@ public class PlayScreen extends ScreenAdapter {
 
         // draw the stage (player and enemies)
         stage.draw();
+
+        if (enableLights) {
+            // Apply lights
+            this.rayHandler.setCombinedMatrix((OrthographicCamera) stage.getCamera());
+            this.rayHandler.updateAndRender();
+        }
 
         // render box2D Debug
         if (drawBox2DDebug) {
@@ -153,8 +168,14 @@ public class PlayScreen extends ScreenAdapter {
         multiplexer.addProcessor(new InputAdapter() {
             @Override
             public boolean keyDown(int keycode) {
+                // Toggle Box2DDebug drawing
                 if (keycode == Input.Keys.NUMPAD_0) {
                     drawBox2DDebug = !drawBox2DDebug;
+                    return true;
+                }
+                // Toggle lights
+                if (keycode == Input.Keys.NUMPAD_1) {
+                    enableLights = !enableLights;
                     return true;
                 }
                 return false;

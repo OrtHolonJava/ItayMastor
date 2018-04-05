@@ -11,10 +11,7 @@ import com.itay347.finaldays.GameInput;
 
 public abstract class BasicActor extends Actor {
     protected TextureRegion textureRegion;
-    protected float maxSpeed;
-
     protected Body body;
-    private Vector2 previousVelocity;
 
     public BasicActor(Texture texture, World world) {
         this(texture, texture.getWidth(), texture.getHeight(), world);
@@ -23,8 +20,8 @@ public abstract class BasicActor extends Actor {
     public BasicActor(Texture texture, int width, int height, World world) {
         textureRegion = new TextureRegion(texture);
         setSize(width, height);
+        this.setOrigin(getWidth() / 2, getHeight() / 2);
         createBody(world);
-        previousVelocity = null;
     }
 
     private void createBody(World world) {
@@ -83,14 +80,11 @@ public abstract class BasicActor extends Actor {
     protected abstract Vector2 getMoveDirection();
 
     private void applyFriction() {
-//        if (previousVelocity != null) {
-            body.applyForceToCenter(body.getLinearVelocity().cpy().scl(-1, -1).scl(5000), true);
-//        }
+        body.applyForceToCenter(body.getLinearVelocity().cpy().scl(-1, -1).scl(5000), true);
     }
 
     public void updateAfterWorldStep() {
         this.setPosition(body.getPosition().x, body.getPosition().y, Align.center);
-//        previousVelocity = body.getLinearVelocity();
     }
 
     @Override

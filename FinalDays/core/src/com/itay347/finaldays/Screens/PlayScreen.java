@@ -81,7 +81,7 @@ public class PlayScreen extends ScreenAdapter {
         }
 
         // update the stage
-//        stage.act(myDelta);
+        stage.act(myDelta);
 
 
         // TODO: maybe Make the camera move smoother

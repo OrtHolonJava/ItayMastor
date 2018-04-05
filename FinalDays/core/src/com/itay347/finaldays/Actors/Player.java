@@ -26,4 +26,14 @@ public class Player extends BasicActor {
     protected Vector2 getMoveDirection() {
         return GameInput.KeyForce;
     }
+
+    @Override
+    public void act(float delta) {
+        super.act(delta);
+
+        // Rotate the player according to the mouse
+        Vector2 dir = new Vector2(Gdx.input.getX() - getStage().getWidth() / 2,
+                Gdx.input.getY() - getStage().getHeight() / 2);
+        this.setRotation(-dir.angle()); // minus the angle because it's flipped without it...
+    }
 }

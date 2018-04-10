@@ -12,6 +12,27 @@ public abstract class BasicActor extends Actor {
     protected TextureRegion textureRegion;
     protected Body body;
 
+    /**
+     * Maximum health points
+     */
+    protected int maxHp;
+    /**
+     * Current health points
+     */
+    protected int hp;
+    /**
+     * Output damage per hit
+     */
+    protected int damage;
+    /**
+     * The delay between hits
+     */
+    protected float hitDelay;
+    /**
+     * Current time until able to hit again
+     */
+    protected float hitCooldown;
+
     public BasicActor(Texture texture, World world) {
         this(texture, texture.getWidth(), texture.getHeight(), world, (short) 0, (short) 0);
     }

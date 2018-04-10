@@ -1,5 +1,6 @@
 package com.itay347.finaldays.Screens;
 
+import box2dLight.Light;
 import box2dLight.RayHandler;
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.GL20;
@@ -11,13 +12,18 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.utils.Array;
 import com.itay347.finaldays.Actors.BasicActor;
+import com.itay347.finaldays.Actors.Enemy;
 import com.itay347.finaldays.Actors.Player;
 import com.itay347.finaldays.FinalDays;
+import com.itay347.finaldays.MyValues;
 
 public class PlayScreen extends ScreenAdapter {
     public static final String MAP_FILE_NAME = "Maps\\FinalDaysMap.tmx";
     public static final String PLAYER_IMAGE = "survivor-move_handgun_0.png";
+    public static final String ENEMY_IMAGE = "skeleton-idle_0.png";
+
     private FinalDays game;
 
     private TiledMap tiledMap;
@@ -31,11 +37,13 @@ public class PlayScreen extends ScreenAdapter {
 
     private Stage stage;
     private Player player;
+    private Enemy testEnemy;
+    private Array<Enemy> enemies;
 
     public PlayScreen(FinalDays game) {
         this.game = game;
         game.getAssetManager().load(PLAYER_IMAGE, Texture.class);
-        game.getAssetManager().finishLoadingAsset(PLAYER_IMAGE);
+        game.getAssetManager().load(ENEMY_IMAGE, Texture.class);
 
         drawBox2DDebug = false;
         enableLights = true;
@@ -57,11 +65,18 @@ public class PlayScreen extends ScreenAdapter {
         rayHandler.setShadows(true);             // enable or disable shadow
         rayHandler.setCulling(true);             // enable or disable culling
         rayHandler.setAmbientLight(0f);          // set default ambient light
+        // Set lights to only affect walls
+        Light.setGlobalContactFilter(MyValues.LIGHT_ENTITY, (short) 0, MyValues.WALL_ENTITY);
 
         // Init the Stage and add the player
         stage = new Stage();
+        game.getAssetManager().finishLoadingAsset(PLAYER_IMAGE);
         player = new Player((Texture) game.getAssetManager().get(PLAYER_IMAGE), world, rayHandler);
         stage.addActor(player);
+
+        game.getAssetManager().finishLoadingAsset(ENEMY_IMAGE);
+        testEnemy = new Enemy((Texture) game.getAssetManager().get(ENEMY_IMAGE), world);
+        stage.addActor(testEnemy);
         // TODO: Add the enemy AI actors
 
         createWallColliders();
@@ -148,6 +163,9 @@ public class PlayScreen extends ScreenAdapter {
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;
         fixtureDef.density = 1f;
+        fixtureDef.filter.categoryBits = MyValues.WALL_ENTITY;
+        fixtureDef.filter.maskBits = MyValues.PLAYER_ENTITY | MyValues.ENEMY_ENTITY | MyValues.LIGHT_ENTITY;
+
         for (int y = 0; y < mapLayer.getHeight(); y++) {
             for (int x = 0; x < mapLayer.getWidth(); x++) {
                 if (mapLayer.getCell(x, y).getTile().getProperties().containsKey("Collision")) {

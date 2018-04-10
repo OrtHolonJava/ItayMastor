@@ -13,17 +13,17 @@ public abstract class BasicActor extends Actor {
     protected Body body;
 
     public BasicActor(Texture texture, World world) {
-        this(texture, texture.getWidth(), texture.getHeight(), world);
+        this(texture, texture.getWidth(), texture.getHeight(), world, (short) 0, (short) 0);
     }
 
-    public BasicActor(Texture texture, int width, int height, World world) {
+    public BasicActor(Texture texture, int width, int height, World world, short categoryBits, short maskBits) {
         textureRegion = new TextureRegion(texture);
         setSize(width, height);
         this.setOrigin(getWidth() / 2, getHeight() / 2);
-        createBody(world);
+        createBody(world, categoryBits, maskBits);
     }
 
-    private void createBody(World world) {
+    private void createBody(World world, short categoryBits, short maskBits) {
         // Now create a BodyDefinition.  This defines the physics objects type
         //and position in the simulation
         BodyDef bodyDef = new BodyDef();
@@ -52,6 +52,8 @@ public abstract class BasicActor extends Actor {
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;
         fixtureDef.density = 1f;
+        fixtureDef.filter.categoryBits = categoryBits;
+        fixtureDef.filter.maskBits = maskBits;
 
         Fixture fixture = body.createFixture(fixtureDef);
 

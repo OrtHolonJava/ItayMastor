@@ -9,14 +9,19 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import com.itay347.finaldays.GameInput;
+import com.itay347.finaldays.MyValues;
 
 public class Player extends BasicActor {
+    public static final String NAME = "Player";
+
     private ConeLight coneLight1;
     private ConeLight coneLight2;
     private PointLight pointLight;
 
     public Player(Texture texture, World world, RayHandler rayHandler) {
-        super(texture, texture.getWidth() / 6, texture.getHeight() / 6, world);
+        super(texture, texture.getWidth() / 6, texture.getHeight() / 6, world,
+                MyValues.PLAYER_ENTITY, (short) (MyValues.ENEMY_ENTITY | MyValues.WALL_ENTITY));
+        setName(NAME);
 
         // Init the player's lights
         coneLight1 = new ConeLight(rayHandler, 500, new Color(1, 1, 1, 1), 1000, 0, 0, 0, 35);

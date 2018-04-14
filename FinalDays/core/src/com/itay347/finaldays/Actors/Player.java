@@ -18,8 +18,8 @@ public class Player extends BasicActor {
     private ConeLight coneLight2;
     private PointLight pointLight;
 
-    public Player(Texture texture, World world, RayHandler rayHandler) {
-        super(texture, texture.getWidth() / 6, texture.getHeight() / 6, world, MyValues.SPEED_PLAYER,
+    public Player(int xTile, int yTile, Texture texture, World world, RayHandler rayHandler) {
+        super(xTile, yTile, texture, texture.getWidth() / 6, texture.getHeight() / 6, world, MyValues.SPEED_PLAYER,
                 (short) (MyValues.ENTITY_ENEMY | MyValues.ENTITY_WALL), MyValues.ENTITY_PLAYER);
         setName(NAME);
 

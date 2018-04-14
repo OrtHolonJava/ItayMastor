@@ -9,8 +9,8 @@ public class Enemy extends BasicActor {
     private Vector2 moveDirection;
     private Vector2 lookDirection;
 
-    public Enemy(Texture texture, World world) {
-        super(texture, texture.getWidth() / 6, texture.getHeight() / 6, world, MyValues.SPEED_ENEMY,
+    public Enemy(int xTile, int yTile, Texture texture, World world) {
+        super(xTile, yTile, texture, texture.getWidth() / 6, texture.getHeight() / 6, world, MyValues.SPEED_ENEMY,
                 (short) (MyValues.ENTITY_PLAYER | MyValues.ENTITY_WALL), MyValues.ENTITY_ENEMY);
         moveDirection = new Vector2();
         lookDirection = new Vector2();

@@ -28,6 +28,7 @@ public class PlayScreen extends ScreenAdapter {
 
     private TiledMap tiledMap;
     private TiledMapRenderer tiledMapRenderer;
+    private static int TileSize;
 
     private World world;
     private Box2DDebugRenderer box2DDebugRenderer;
@@ -51,6 +52,7 @@ public class PlayScreen extends ScreenAdapter {
         // Load the tiled map
         tiledMap = new TmxMapLoader().load(MAP_FILE_NAME);
         tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap);
+        saveTileSize();
 
         // Init the Box2D World
         world = new World(Vector2.Zero, false); // TODO: maybe change doSleep for better(?) performance
@@ -71,11 +73,13 @@ public class PlayScreen extends ScreenAdapter {
         // Init the Stage and add the player
         stage = new Stage();
         game.getAssetManager().finishLoadingAsset(PLAYER_IMAGE);
-        player = new Player((Texture) game.getAssetManager().get(PLAYER_IMAGE), world, rayHandler);
+        int startX = 25;
+        int startY = 25;
+        player = new Player(startX, startY, (Texture) game.getAssetManager().get(PLAYER_IMAGE), world, rayHandler);
         stage.addActor(player);
 
         game.getAssetManager().finishLoadingAsset(ENEMY_IMAGE);
-        testEnemy = new Enemy((Texture) game.getAssetManager().get(ENEMY_IMAGE), world);
+        testEnemy = new Enemy(25, 0, (Texture) game.getAssetManager().get(ENEMY_IMAGE), world);
         stage.addActor(testEnemy);
         // TODO: Add the enemy AI actors
 
@@ -153,13 +157,12 @@ public class PlayScreen extends ScreenAdapter {
      */
     private void createWallColliders() {
         TiledMapTileLayer mapLayer = (TiledMapTileLayer) tiledMap.getLayers().get("Main Layer");
-        int tileSize = tiledMap.getProperties().get("tilewidth", Integer.class);
 
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.StaticBody;
 
         PolygonShape shape = new PolygonShape();
-        shape.setAsBox(tileSize / 2, tileSize / 2);
+        shape.setAsBox(TileSize / 2, TileSize / 2);
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;
         fixtureDef.density = 1f;
@@ -169,7 +172,7 @@ public class PlayScreen extends ScreenAdapter {
         for (int y = 0; y < mapLayer.getHeight(); y++) {
             for (int x = 0; x < mapLayer.getWidth(); x++) {
                 if (mapLayer.getCell(x, y).getTile().getProperties().containsKey("Collision")) {
-                    bodyDef.position.set(tileSize * x + tileSize / 2, tileSize * y + tileSize / 2);
+                    bodyDef.position.set(TileSize * x + TileSize / 2, TileSize * y + TileSize / 2);
                     Body body = world.createBody(bodyDef);
                     body.createFixture(fixtureDef);
                     // TODO: maybe save all the bodies in a list
@@ -177,6 +180,14 @@ public class PlayScreen extends ScreenAdapter {
             }
         }
         shape.dispose();
+    }
+
+    private void saveTileSize() {
+        PlayScreen.TileSize = tiledMap.getProperties().get("tilewidth", Integer.class);
+    }
+
+    public static int getTileSize() {
+        return TileSize;
     }
 
     private void initInputProcessor() {

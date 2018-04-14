@@ -1,5 +1,7 @@
 package com.itay347.finaldays;
 
+import com.itay347.finaldays.Screens.PlayScreen;
+
 public class MyValues {
     // Values used in collision and light filters
     public static final short ENTITY_PLAYER = 0x1;
@@ -11,4 +13,8 @@ public class MyValues {
     public static final float FRICTION_CONST = 5000;
     public static final float SPEED_PLAYER = 20000;
     public static final float SPEED_ENEMY = 15000;
+
+    public static int tileToPos(int index) {
+        return index * PlayScreen.getTileSize() + PlayScreen.getTileSize() / 2;
+    }
 }

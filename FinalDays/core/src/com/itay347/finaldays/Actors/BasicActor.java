@@ -8,6 +8,7 @@ import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.Align;
 import com.itay347.finaldays.MyValues;
+import com.itay347.finaldays.Screens.PlayScreen;
 
 public abstract class BasicActor extends Actor {
     protected TextureRegion textureRegion;
@@ -37,10 +38,11 @@ public abstract class BasicActor extends Actor {
      */
     protected float hitCooldown;
 
-    public BasicActor(Texture texture, int width, int height, World world, float speed, short maskBits, short categoryBits) {
+    public BasicActor(int xTile, int yTile, Texture texture, int width, int height, World world, float speed, short maskBits, short categoryBits) {
         textureRegion = new TextureRegion(texture);
         setSize(width, height);
         this.setOrigin(getWidth() / 2, getHeight() / 2);
+        this.setPosition(MyValues.tileToPos(xTile), MyValues.tileToPos(yTile), Align.center);
         this.speed = speed;
         createBody(world, categoryBits, maskBits);
     }
@@ -52,7 +54,7 @@ public abstract class BasicActor extends Actor {
         bodyDef.type = BodyDef.BodyType.DynamicBody;
         // We are going to use 1 to 1 dimensions.  Meaning 1 in physics engine
         // is 1 pixel
-        // Set our body to the same position as our sprite
+        // Set our body to the same position as our actor
         bodyDef.position.set(this.getX() + this.getWidth() / 2, this.getY() + this.getWidth() / 2);
 
         // Create a body in the world using our definition
@@ -109,7 +111,16 @@ public abstract class BasicActor extends Actor {
     }
 
     public void updateAfterWorldStep() {
+        syncPosToBody();
+    }
+
+    public void syncPosToBody() {
         this.setPosition(body.getPosition().x, body.getPosition().y, Align.center);
+    }
+
+    public void setPositionByTileIndex(int x, int y) {
+        body.getPosition().set(MyValues.tileToPos(x), MyValues.tileToPos(y));
+        syncPosToBody();
     }
 
     @Override

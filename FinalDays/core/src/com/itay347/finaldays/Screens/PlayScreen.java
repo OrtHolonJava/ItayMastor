@@ -152,7 +152,7 @@ public class PlayScreen extends ScreenAdapter {
      * Create Box2D Bodies for wall collisions
      */
     private void createWallColliders() {
-        TiledMapTileLayer mapLayer = (TiledMapTileLayer) tiledMap.getLayers().get(0);
+        TiledMapTileLayer mapLayer = (TiledMapTileLayer) tiledMap.getLayers().get("Main Layer");
         int tileSize = tiledMap.getProperties().get("tilewidth", Integer.class);
 
         BodyDef bodyDef = new BodyDef();

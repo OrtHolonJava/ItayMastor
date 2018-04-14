@@ -29,6 +29,7 @@ public class PlayScreen extends ScreenAdapter {
     private TiledMap tiledMap;
     private TiledMapRenderer tiledMapRenderer;
     private static int TileSize;
+    private boolean[][] walls;
 
     private World world;
     private Box2DDebugRenderer box2DDebugRenderer;
@@ -53,6 +54,7 @@ public class PlayScreen extends ScreenAdapter {
         tiledMap = new TmxMapLoader().load(MAP_FILE_NAME);
         tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap);
         saveTileSize();
+        findAndSaveWalls();
 
         // Init the Box2D World
         world = new World(Vector2.Zero, false); // TODO: maybe change doSleep for better(?) performance
@@ -150,6 +152,13 @@ public class PlayScreen extends ScreenAdapter {
         tiledMap.dispose();
         world.dispose();
         stage.dispose();
+    }
+
+    private void findAndSaveWalls() {
+        TiledMapTileLayer mapLayer = (TiledMapTileLayer) tiledMap.getLayers().get("Main Layer");
+
+        walls = new boolean[mapLayer.getWidth()][mapLayer.getHeight()];
+        // TODO: finish and use in createWallColliders()
     }
 
     /**

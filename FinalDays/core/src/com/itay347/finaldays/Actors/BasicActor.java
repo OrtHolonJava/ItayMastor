@@ -7,11 +7,15 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.Align;
+import com.itay347.finaldays.MyValues;
 
 public abstract class BasicActor extends Actor {
     protected TextureRegion textureRegion;
     protected Body body;
-
+    /**
+     * A value indicating how fast the character moves (not actual speed units)
+     */
+    protected float speed;
     /**
      * Maximum health points
      */
@@ -33,14 +37,11 @@ public abstract class BasicActor extends Actor {
      */
     protected float hitCooldown;
 
-    public BasicActor(Texture texture, World world) {
-        this(texture, texture.getWidth(), texture.getHeight(), world, (short) 0, (short) 0);
-    }
-
-    public BasicActor(Texture texture, int width, int height, World world, short categoryBits, short maskBits) {
+    public BasicActor(Texture texture, int width, int height, World world, float speed, short maskBits, short categoryBits) {
         textureRegion = new TextureRegion(texture);
         setSize(width, height);
         this.setOrigin(getWidth() / 2, getHeight() / 2);
+        this.speed = speed;
         createBody(world, categoryBits, maskBits);
     }
 
@@ -88,7 +89,8 @@ public abstract class BasicActor extends Actor {
 
         if (isApplyingMovement()) {
 //            Gdx.app.debug("keypress", "Applying impulse: " + GameInput.KeyForce);
-            body.applyLinearImpulse(getMoveDirection().cpy().scl(20000), body.getWorldCenter(), true);
+            // TODO: Move the scl value to a constant
+            body.applyLinearImpulse(getMoveDirection().cpy().scl(speed), body.getWorldCenter(), true);
         }
 
         // Friction
@@ -102,7 +104,8 @@ public abstract class BasicActor extends Actor {
     protected abstract Vector2 getMoveDirection();
 
     private void applyFriction() {
-        body.applyForceToCenter(body.getLinearVelocity().cpy().scl(-1, -1).scl(5000), true);
+        // TODO: Move the scl value to a constant
+        body.applyForceToCenter(body.getLinearVelocity().cpy().scl(-1, -1).scl(MyValues.FRICTION_CONST), true);
     }
 
     public void updateAfterWorldStep() {

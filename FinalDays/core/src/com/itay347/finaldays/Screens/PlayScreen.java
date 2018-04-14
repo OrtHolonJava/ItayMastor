@@ -66,7 +66,7 @@ public class PlayScreen extends ScreenAdapter {
         rayHandler.setCulling(true);             // enable or disable culling
         rayHandler.setAmbientLight(0f);          // set default ambient light
         // Set lights to only affect walls
-        Light.setGlobalContactFilter(MyValues.LIGHT_ENTITY, (short) 0, MyValues.WALL_ENTITY);
+        Light.setGlobalContactFilter(MyValues.ENTITY_LIGHT, (short) 0, MyValues.ENTITY_WALL);
 
         // Init the Stage and add the player
         stage = new Stage();
@@ -163,8 +163,8 @@ public class PlayScreen extends ScreenAdapter {
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;
         fixtureDef.density = 1f;
-        fixtureDef.filter.categoryBits = MyValues.WALL_ENTITY;
-        fixtureDef.filter.maskBits = MyValues.PLAYER_ENTITY | MyValues.ENEMY_ENTITY | MyValues.LIGHT_ENTITY;
+        fixtureDef.filter.categoryBits = MyValues.ENTITY_WALL;
+        fixtureDef.filter.maskBits = MyValues.ENTITY_PLAYER | MyValues.ENTITY_ENEMY | MyValues.ENTITY_LIGHT;
 
         for (int y = 0; y < mapLayer.getHeight(); y++) {
             for (int x = 0; x < mapLayer.getWidth(); x++) {

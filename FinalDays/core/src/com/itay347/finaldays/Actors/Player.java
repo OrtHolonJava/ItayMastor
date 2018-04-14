@@ -19,8 +19,8 @@ public class Player extends BasicActor {
     private PointLight pointLight;
 
     public Player(Texture texture, World world, RayHandler rayHandler) {
-        super(texture, texture.getWidth() / 6, texture.getHeight() / 6, world,
-                MyValues.PLAYER_ENTITY, (short) (MyValues.ENEMY_ENTITY | MyValues.WALL_ENTITY));
+        super(texture, texture.getWidth() / 6, texture.getHeight() / 6, world, MyValues.SPEED_PLAYER,
+                (short) (MyValues.ENTITY_ENEMY | MyValues.ENTITY_WALL), MyValues.ENTITY_PLAYER);
         setName(NAME);
 
         // Init the player's lights

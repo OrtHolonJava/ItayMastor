@@ -14,7 +14,19 @@ public class MyValues {
     public static final float SPEED_PLAYER = 20000;
     public static final float SPEED_ENEMY = 15000;
 
+    /**
+     * @param index tile index at the x or y axis
+     * @return the pixel position of the center of the tile
+     */
     public static int tileToPos(int index) {
         return index * PlayScreen.getTileSize() + PlayScreen.getTileSize() / 2;
+    }
+
+    /**
+     * @param pos pixel position at the x or y axis
+     * @return the tile index of the given position
+     */
+    public static int posToTile(int pos) {
+        return pos / PlayScreen.getTileSize();
     }
 }

@@ -13,6 +13,7 @@ import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
+import com.itay347.finaldays.AI.AIManager;
 import com.itay347.finaldays.Actors.BasicActor;
 import com.itay347.finaldays.Actors.Enemy;
 import com.itay347.finaldays.Actors.Player;
@@ -29,7 +30,7 @@ public class PlayScreen extends ScreenAdapter {
     private TiledMap tiledMap;
     private TiledMapRenderer tiledMapRenderer;
     private static int TileSize;
-    private boolean[][] walls;
+    private static boolean[][] walls;
 
     private World world;
     private Box2DDebugRenderer box2DDebugRenderer;
@@ -41,6 +42,8 @@ public class PlayScreen extends ScreenAdapter {
     private Player player;
     private Enemy testEnemy;
     private Array<Enemy> enemies;
+
+    private AIManager aiManager;
 
     public PlayScreen(FinalDays game) {
         this.game = game;
@@ -80,11 +83,13 @@ public class PlayScreen extends ScreenAdapter {
         player = new Player(startX, startY, (Texture) game.getAssetManager().get(PLAYER_IMAGE), world, rayHandler);
         stage.addActor(player);
 
+        // Add the enemies
         game.getAssetManager().finishLoadingAsset(ENEMY_IMAGE);
         testEnemy = new Enemy(25, 0, (Texture) game.getAssetManager().get(ENEMY_IMAGE), world);
         stage.addActor(testEnemy);
         // TODO: Add the enemy AI actors
 
+        aiManager = new AIManager(player);
         createWallColliders();
         initInputProcessor();
     }
@@ -207,6 +212,10 @@ public class PlayScreen extends ScreenAdapter {
      */
     public static int getTileSize() {
         return TileSize;
+    }
+
+    public static boolean[][] getWalls() {
+        return walls;
     }
 
     /**

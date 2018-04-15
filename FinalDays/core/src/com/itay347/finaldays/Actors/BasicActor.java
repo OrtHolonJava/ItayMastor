@@ -110,16 +110,16 @@ public abstract class BasicActor extends Actor {
     }
 
     public void updateAfterWorldStep() {
-        syncPosToBody();
+        syncActorPosToBodyPos();
     }
 
-    public void syncPosToBody() {
+    public void syncActorPosToBodyPos() {
         this.setPosition(body.getPosition().x, body.getPosition().y, Align.center);
     }
 
     public void setPositionByTileIndex(int x, int y) {
         body.getPosition().set(MyValues.tileToPos(x), MyValues.tileToPos(y));
-        syncPosToBody();
+        syncActorPosToBodyPos();
     }
 
     @Override

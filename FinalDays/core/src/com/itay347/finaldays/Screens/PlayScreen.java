@@ -154,22 +154,26 @@ public class PlayScreen extends ScreenAdapter {
         stage.dispose();
     }
 
+    /**
+     * Save the tile indexes of walls in a 2D array of booleans "walls"
+     */
     private void findAndSaveWalls() {
         TiledMapTileLayer mapLayer = (TiledMapTileLayer) tiledMap.getLayers().get("Main Layer");
 
         walls = new boolean[mapLayer.getWidth()][mapLayer.getHeight()];
-        // TODO: finish and use in createWallColliders()
+        for (int x = 0; x < walls.length; x++) {
+            for (int y = 0; y < walls[x].length; y++) {
+                walls[x][y] = mapLayer.getCell(x, y).getTile().getProperties().containsKey("Collision");
+            }
+        }
     }
 
     /**
      * Create Box2D Bodies for wall collisions
      */
     private void createWallColliders() {
-        TiledMapTileLayer mapLayer = (TiledMapTileLayer) tiledMap.getLayers().get("Main Layer");
-
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.StaticBody;
-
         PolygonShape shape = new PolygonShape();
         shape.setAsBox(TileSize / 2, TileSize / 2);
         FixtureDef fixtureDef = new FixtureDef();
@@ -178,9 +182,9 @@ public class PlayScreen extends ScreenAdapter {
         fixtureDef.filter.categoryBits = MyValues.ENTITY_WALL;
         fixtureDef.filter.maskBits = MyValues.ENTITY_PLAYER | MyValues.ENTITY_ENEMY | MyValues.ENTITY_LIGHT;
 
-        for (int y = 0; y < mapLayer.getHeight(); y++) {
-            for (int x = 0; x < mapLayer.getWidth(); x++) {
-                if (mapLayer.getCell(x, y).getTile().getProperties().containsKey("Collision")) {
+        for (int x = 0; x < walls.length; x++) {
+            for (int y = 0; y < walls[x].length; y++) {
+                if (walls[x][y]) {
                     bodyDef.position.set(TileSize * x + TileSize / 2, TileSize * y + TileSize / 2);
                     Body body = world.createBody(bodyDef);
                     body.createFixture(fixtureDef);
@@ -191,18 +195,27 @@ public class PlayScreen extends ScreenAdapter {
         shape.dispose();
     }
 
+    /**
+     * Save the pixel size of one map tile in a static field
+     */
     private void saveTileSize() {
         PlayScreen.TileSize = tiledMap.getProperties().get("tilewidth", Integer.class);
     }
 
+    /**
+     * @return the pixel size of one map tile
+     */
     public static int getTileSize() {
         return TileSize;
     }
 
+    /**
+     * Initialize the input processor
+     */
     private void initInputProcessor() {
         InputMultiplexer multiplexer = new InputMultiplexer();
         // TODO: add the uiStage to the multiplexer
-        //multiplexer.addProcessor(stage);
+//        multiplexer.addProcessor(stage);
         multiplexer.addProcessor(new InputAdapter() {
             @Override
             public boolean keyDown(int keycode) {

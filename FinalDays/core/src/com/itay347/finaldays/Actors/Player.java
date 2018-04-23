@@ -11,25 +11,37 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.itay347.finaldays.GameInput;
 import com.itay347.finaldays.MyValues;
 
+/**
+ * The actor class of the player
+ */
 public class Player extends BasicActor {
     public static final String NAME = "Player";
 
     /**
-     * The small degree bright cone light
+     * The small, bright cone light
      */
     private ConeLight coneLight1;
     /**
-     * The large degree less bright cone light
+     * The large, less bright cone light
      */
     private ConeLight coneLight2;
     /**
-     * The light on top of the player
+     * The point light on top of the player
      */
     private PointLight pointLight;
 
+    /**
+     * Init the player
+     *
+     * @param xTile      the tile x index to start at
+     * @param yTile      the tile y index to start at
+     * @param texture    the texture for drawing the player
+     * @param world      A reference to the Box2D world (used to create the body of the player)
+     * @param rayHandler A reference to the ray handler (used to init the light objects)
+     */
     public Player(int xTile, int yTile, Texture texture, World world, RayHandler rayHandler) {
         super(xTile, yTile, texture, texture.getWidth() / 6, texture.getHeight() / 6, world, MyValues.SPEED_PLAYER,
-                (short) (MyValues.ENTITY_ENEMY | MyValues.ENTITY_WALL), MyValues.ENTITY_PLAYER);
+                MyValues.ENTITY_PLAYER, (short) (MyValues.ENTITY_ENEMY | MyValues.ENTITY_WALL));
         setName(NAME);
 
         // Init the player's lights
@@ -38,21 +50,35 @@ public class Player extends BasicActor {
         pointLight = new PointLight(rayHandler, 100, new Color(1, 1, 1, 1), 125, 0, 0);
     }
 
+    /**
+     * Update the player's movement information
+     */
     @Override
     protected void updateMovementInformation() {
         GameInput.update();
     }
 
+    /**
+     * @return Whether or not the player "wants" to move
+     */
     @Override
     protected boolean isApplyingMovement() {
         return GameInput.KeyPressed;
     }
 
+    /**
+     * @return The direction to move the player
+     */
     @Override
     protected Vector2 getMoveDirection() {
         return GameInput.KeyForce;
     }
 
+    /**
+     * Called when stage.act(...) is called (after the movement updates)
+     *
+     * @param delta The delta time
+     */
     @Override
     public void act(float delta) {
         super.act(delta);
@@ -62,6 +88,7 @@ public class Player extends BasicActor {
                 Gdx.input.getY() - getStage().getCamera().viewportHeight / 2);
         this.setRotation(-dir.angle()); // minus the angle because it's flipped without it...
 
+        // Set and rotate the lights according to the players position and the mouse's direction
         coneLight1.setPosition(body.getPosition());
         coneLight1.setDirection(-dir.angle());
         coneLight2.setPosition(body.getPosition());

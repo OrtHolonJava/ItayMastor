@@ -1,7 +1,9 @@
 package com.itay347.finaldays.AI;
 
 import com.badlogic.gdx.ai.pfa.Connection;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
+import com.itay347.finaldays.MyValues;
 import com.itay347.finaldays.Screens.PlayScreen;
 
 public class AINode {
@@ -23,6 +25,10 @@ public class AINode {
 
     public int getIndex() {
         return index;
+    }
+
+    public Vector2 getCenterPoint() {
+        return new Vector2(MyValues.tileToPos(tileX), MyValues.tileToPos(tileY));
     }
 
     public Array<Connection<AINode>> getConnections() {

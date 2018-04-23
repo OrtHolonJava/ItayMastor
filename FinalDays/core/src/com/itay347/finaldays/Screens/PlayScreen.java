@@ -190,7 +190,7 @@ public class PlayScreen extends ScreenAdapter {
         for (int x = 0; x < walls.length; x++) {
             for (int y = 0; y < walls[x].length; y++) {
                 if (walls[x][y]) {
-                    bodyDef.position.set(TileSize * x + TileSize / 2, TileSize * y + TileSize / 2);
+                    bodyDef.position.set(MyValues.tileToPos(x), MyValues.tileToPos(y));
                     Body body = world.createBody(bodyDef);
                     body.createFixture(fixtureDef);
                     // TODO: maybe save all the bodies in a list

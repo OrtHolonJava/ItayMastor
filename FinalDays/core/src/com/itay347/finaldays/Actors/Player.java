@@ -14,8 +14,17 @@ import com.itay347.finaldays.MyValues;
 public class Player extends BasicActor {
     public static final String NAME = "Player";
 
+    /**
+     * The small degree bright cone light
+     */
     private ConeLight coneLight1;
+    /**
+     * The large degree less bright cone light
+     */
     private ConeLight coneLight2;
+    /**
+     * The light on top of the player
+     */
     private PointLight pointLight;
 
     public Player(int xTile, int yTile, Texture texture, World world, RayHandler rayHandler) {

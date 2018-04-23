@@ -13,7 +13,17 @@ import com.itay347.finaldays.AI.AINode;
 import com.itay347.finaldays.MyValues;
 
 public abstract class BasicActor extends Actor {
+    /**
+     * Contains the texture to draw when rendering the character
+     */
     protected TextureRegion textureRegion;
+    /**
+     * A reference to the world used for ray-casting
+     */
+    protected World world;
+    /**
+     * The Box2D body of the character
+     */
     protected Body body;
     /**
      * A value indicating how fast the character moves (not actual speed units)
@@ -46,10 +56,11 @@ public abstract class BasicActor extends Actor {
         this.setOrigin(getWidth() / 2, getHeight() / 2);
         this.setPosition(MyValues.tileToPos(xTile), MyValues.tileToPos(yTile), Align.center);
         this.speed = speed;
-        createBody(world, categoryBits, maskBits);
+        this.world = world;
+        createBody(categoryBits, maskBits);
     }
 
-    private void createBody(World world, short categoryBits, short maskBits) {
+    private void createBody(short categoryBits, short maskBits) {
         // Now create a BodyDefinition.  This defines the physics objects type
         //and position in the simulation
         BodyDef bodyDef = new BodyDef();

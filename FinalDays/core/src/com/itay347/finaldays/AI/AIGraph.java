@@ -50,8 +50,8 @@ public class AIGraph implements IndexedGraph<AINode> {
                         node.getConnections().add(new DefaultConnection<AINode>(node, neighbor));
                     }
                 }
-                // TODO: maybe this shuffle line is necessary
-//                node.getConnections().shuffle();
+
+                node.getConnections().shuffle();
             }
         }
 

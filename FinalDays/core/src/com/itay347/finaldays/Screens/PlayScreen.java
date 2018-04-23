@@ -12,7 +12,6 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.utils.Array;
 import com.itay347.finaldays.AI.AIManager;
 import com.itay347.finaldays.Actors.BasicActor;
 import com.itay347.finaldays.Actors.Enemy;

@@ -20,31 +20,80 @@ import com.itay347.finaldays.Actors.Player;
 import com.itay347.finaldays.FinalDays;
 import com.itay347.finaldays.MyValues;
 
+/**
+ * The main play screen of the game
+ */
 public class PlayScreen extends ScreenAdapter {
-    public static final String MAP_FILE_NAME = "Maps\\FinalDaysMap.tmx";
+    public static final String MAP_FILE = "Maps\\FinalDaysMap.tmx";
     public static final String PLAYER_IMAGE = "survivor-move_handgun_0.png";
     public static final String ENEMY_IMAGE = "skeleton-idle_0.png";
 
+    /**
+     * A reference to the main game class
+     */
     private FinalDays game;
 
+    /**
+     * The tiled map information from the "tiled" editor
+     */
     private TiledMap tiledMap;
+    /**
+     * The renderer of the tiled map
+     */
     private TiledMapRenderer tiledMapRenderer;
+    /**
+     * Tile size in pixels
+     */
     private static int TileSize;
+    /**
+     * 2D boolean array saving the location of walls as true
+     */
     private static boolean[][] walls;
 
+    /**
+     * The Box2D world containing all the bodies
+     */
     private World world;
+    /**
+     * The renderer for debugging the box2d world
+     */
     private Box2DDebugRenderer box2DDebugRenderer;
+    /**
+     * Whether or not to draw the debug info of the box2d world
+     */
     private boolean drawBox2DDebug;
+    /**
+     * Handles the lights
+     */
     private RayHandler rayHandler;
+    /**
+     * Whether or not to apply "real" lighting
+     */
     private boolean enableLights;
 
+    /**
+     * The libgdx scene2d stage containing the actors
+     */
     private Stage stage;
+    /**
+     * The player's actor for easy access
+     */
     private Player player;
-    private Enemy testEnemy;
-    private Array<Enemy> enemies;
+    /**
+     * The enemy's actor for easy access
+     */
+    private Enemy enemy;
 
+    /**
+     * The AI manager for the enemies
+     */
     private AIManager aiManager;
 
+    /**
+     * Init the play screen
+     *
+     * @param game A reference to the game
+     */
     public PlayScreen(FinalDays game) {
         this.game = game;
         game.getAssetManager().load(PLAYER_IMAGE, Texture.class);
@@ -53,8 +102,8 @@ public class PlayScreen extends ScreenAdapter {
         drawBox2DDebug = false;
         enableLights = true;
 
-        // Load the tiled map
-        tiledMap = new TmxMapLoader().load(MAP_FILE_NAME);
+        // Load the tiled map first
+        tiledMap = new TmxMapLoader().load(MAP_FILE);
         tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap);
         saveTileSize();
         findAndSaveWalls();
@@ -85,15 +134,21 @@ public class PlayScreen extends ScreenAdapter {
 
         // Add the enemies
         game.getAssetManager().finishLoadingAsset(ENEMY_IMAGE);
-        testEnemy = new Enemy(25, 0, (Texture) game.getAssetManager().get(ENEMY_IMAGE), world);
-        stage.addActor(testEnemy);
-        // TODO: Add the enemy AI actors
+        enemy = new Enemy(25, 0, (Texture) game.getAssetManager().get(ENEMY_IMAGE), world);
+        stage.addActor(enemy);
 
+        // Init the AI manager
         aiManager = new AIManager(player);
+
         createWallColliders();
         initInputProcessor();
     }
 
+    /**
+     * Called when the screen should render itself.
+     *
+     * @param delta The time in seconds since the last render.
+     */
     @Override
     public void render(float delta) {
         // Clear the screen
@@ -101,14 +156,18 @@ public class PlayScreen extends ScreenAdapter {
         Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
+        // Set the render rate to a minimum of 30 (to prevent high values if stuttering)
         float myDelta = Math.min(delta, 1 / 30f);
 
+        // Update all bodies of the actors
         for (Actor actor : stage.getActors()) {
             if (actor instanceof BasicActor) {
                 ((BasicActor) actor).updateBody();
             }
         }
+        // step/advance the world's time (updating the bodies and such)
         world.step(myDelta, 6, 2);
+        // apply after step things (like syncing actor to body)
         for (Actor actor : stage.getActors()) {
             if (actor instanceof BasicActor) {
                 ((BasicActor) actor).updateAfterWorldStep();
@@ -147,11 +206,21 @@ public class PlayScreen extends ScreenAdapter {
         }
     }
 
+    /**
+     * Called when the window is resized
+     *
+     * @param width  game window width
+     * @param height game window height
+     */
     @Override
     public void resize(int width, int height) {
+        // Update the cameras viewport
         ((OrthographicCamera) stage.getCamera()).setToOrtho(false, width, height);
     }
 
+    /**
+     * Clears the resources when the PlayScreen is not used anymore
+     */
     @Override
     public void dispose() {
         tiledMap.dispose();
@@ -214,6 +283,9 @@ public class PlayScreen extends ScreenAdapter {
         return TileSize;
     }
 
+    /**
+     * @return the walls 2d array
+     */
     public static boolean[][] getWalls() {
         return walls;
     }

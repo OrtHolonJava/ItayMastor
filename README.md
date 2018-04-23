@@ -3,26 +3,17 @@ Name: Final Days
 
 It should play like this game: [Link](http://store.steampowered.com/app/459830/Final_Days/)
 
-## Repo Structure
-The repo consists of some folders. One of them is the actual projcet, and the others are side tests for the project.
-
-## Opening/Importing A Folder
+## Opening/Importing the game project
 Use [IntelliJ IDEA](https://www.jetbrains.com/idea/).
 
-([Source of the below instructions](https://github.com/libgdx/libgdx/wiki/Gradle-and-Intellij-IDEA))  
-[Instructions for Eclipse](https://github.com/libgdx/libgdx/wiki/Gradle-and-Eclipse) (IntelliJ is better though...)
-
-### Opening for the first time:
 1. Open IntelliJ (or close all open projects).
 2. Press **Import Project**.
-3. Choose the **build.gradle** file (from inside the folder you want to open).
+3. Choose the **build.gradle** file (thats inside the FinalDays folder).
 
-### Opening after the first time (if the project doesn't exist in IntelliJ's side menu)
-1. Open IntelliJ (or close all open projects).
-2. Press **Open**.
-3. Choose the folder you want to open.
+([Source of the instructions above](https://github.com/libgdx/libgdx/wiki/Gradle-and-Intellij-IDEA))  
+[Instructions for Eclipse](https://github.com/libgdx/libgdx/wiki/Gradle-and-Eclipse) (Not recommended)
 
-## Running A Project
+## Running The Game
 1. `Run -> Edit Configurations...`
 2. Click the plus (+) button and select `Application`.
 3. * Set the `Name` to `Desktop`.

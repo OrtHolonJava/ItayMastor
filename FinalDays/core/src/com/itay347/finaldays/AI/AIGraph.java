@@ -6,15 +6,28 @@ import com.badlogic.gdx.ai.pfa.indexed.IndexedGraph;
 import com.badlogic.gdx.utils.Array;
 import com.itay347.finaldays.Screens.PlayScreen;
 
+/**
+ * Contains the graph of the map
+ */
 public class AIGraph implements IndexedGraph<AINode> {
+    /**
+     * 2D array of the nodes
+     */
     private AINode[][] nodes;
+    /**
+     * The array's width
+     */
     private int width;
+    /**
+     * The array's height
+     */
     private int height;
 
     /**
      * Initialize the graph for the pathfinder
      */
     public AIGraph() {
+        // get the walls info from the PlayScreen and save the width and height
         boolean[][] walls = PlayScreen.getWalls();
         width = walls.length;
         height = walls[0].length;
@@ -27,6 +40,7 @@ public class AIGraph implements IndexedGraph<AINode> {
             }
         }
 
+        // Directions array/matrix for the connections
         int[][] directions = new int[][]{
                 new int[]{0, 1},  // up
                 new int[]{0, -1}, // down
@@ -50,11 +64,9 @@ public class AIGraph implements IndexedGraph<AINode> {
                         node.getConnections().add(new DefaultConnection<AINode>(node, neighbor));
                     }
                 }
-
                 node.getConnections().shuffle();
             }
         }
-
     }
 
     /**
@@ -69,16 +81,31 @@ public class AIGraph implements IndexedGraph<AINode> {
         return this.nodes[tileX][tileY];
     }
 
+    /**
+     * Returns the unique index of the given node.
+     *
+     * @param node the node whose index will be returned
+     * @return the unique index of the given node.
+     */
     @Override
     public int getIndex(AINode node) {
         return node.getIndex();
     }
 
+    /**
+     * Returns the number of nodes in this graph.
+     */
     @Override
     public int getNodeCount() {
         return width * height;
     }
 
+    /**
+     * Returns the connections outgoing from the given node.
+     *
+     * @param fromNode the node whose outgoing connections will be returned
+     * @return the array of connections outgoing from the given node.
+     */
     @Override
     public Array<Connection<AINode>> getConnections(AINode fromNode) {
         return fromNode.getConnections();

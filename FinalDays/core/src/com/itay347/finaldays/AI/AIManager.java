@@ -7,14 +7,35 @@ import com.badlogic.gdx.ai.pfa.indexed.IndexedAStarPathFinder;
 import com.itay347.finaldays.Actors.Enemy;
 import com.itay347.finaldays.Actors.Player;
 
+/**
+ * The manager of AI path-finding
+ */
 public class AIManager {
+    /**
+     * A reference the AIManager's instance
+     */
     private static AIManager Instance;
 
+    /**
+     * The graph of the map
+     */
     private AIGraph graph;
+    /**
+     * The pathfinder (with the AStar algorithm)
+     */
     private IndexedAStarPathFinder<AINode> pathFinder;
+    /**
+     * The heuristic used in the AStar algorithm
+     */
     private Heuristic<AINode> heuristic;
+    /**
+     * The result path
+     */
     private DefaultGraphPath<Connection<AINode>> resultPath;
 
+    /**
+     * A reference to the player for getting his position
+     */
     private Player player;
 
     /**
@@ -38,6 +59,12 @@ public class AIManager {
         AIManager.Instance = this;
     }
 
+    /**
+     * Runs the AStar Algorithm
+     *
+     * @param enemy The enemy actor
+     * @return The next node for the enemy to go to
+     */
     public AINode findNextNode(Enemy enemy) {
         // Get the start and end nodes
         AINode startNode = enemy.getNodeOfMyPosition();
@@ -50,10 +77,16 @@ public class AIManager {
         return resultPath.getCount() == 0 ? null : resultPath.get(0).getToNode();
     }
 
+    /**
+     * @return the AIManager instance
+     */
     public static AIManager getInstance() {
         return Instance;
     }
 
+    /**
+     * @return the graph of the map
+     */
     public AIGraph getGraph() {
         return graph;
     }

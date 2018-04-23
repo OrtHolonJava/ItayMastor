@@ -2,6 +2,9 @@ package com.itay347.finaldays;
 
 import com.itay347.finaldays.Screens.PlayScreen;
 
+/**
+ * Contains game constants and helper methods
+ */
 public class MyValues {
     // Values used in collision and light filters
     public static final short ENTITY_PLAYER = 0x1;

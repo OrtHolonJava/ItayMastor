@@ -4,11 +4,22 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector2;
 
+/**
+ * This class handles the movement input of the player
+ */
 public class GameInput {
+    /**
+     * Vector that contains the direction to move the player
+     */
     public static Vector2 KeyForce = new Vector2();
-    // TODO: maybe replace KeyPressed with a (KeyForce == 0) type of method
+    /**
+     * Were the movement keys pressed
+     */
     public static boolean KeyPressed = false;
 
+    /**
+     * Update the movement input
+     */
     public static void update() {
         KeyForce.y = 0;
         KeyPressed = false;

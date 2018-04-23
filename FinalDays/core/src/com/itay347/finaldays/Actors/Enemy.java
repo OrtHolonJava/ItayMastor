@@ -48,7 +48,7 @@ public class Enemy extends BasicActor {
         } else {
             // Else, use path-finding to get next node and set it as the target
             AINode nextNode = AIManager.getInstance().findNextNode(this);
-            Gdx.app.debug("node tile", "x = " + nextNode.tileX + "\t y = " + nextNode.tileY);
+//            Gdx.app.debug("node tile", "x = " + nextNode.tileX + "\t y = " + nextNode.tileY);
             target = nextNode.getCenterPoint();
             targetIsPlayer = false;
         }

@@ -5,7 +5,6 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.itay347.finaldays.Screens.MenuScreen;
-import com.itay347.finaldays.Screens.PlayScreen;
 
 /**
  * The Game class which handles the screens

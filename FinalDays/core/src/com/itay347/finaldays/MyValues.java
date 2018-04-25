@@ -6,6 +6,14 @@ import com.itay347.finaldays.Screens.PlayScreen;
  * Contains game constants and helper methods
  */
 public class MyValues {
+    // Strings of file paths and names
+    public static final String SKIN_FILE = "Skins\\glassy-ui.json";
+    public static final String LOGO_FILE = "FinalDaysLogo.png";
+    public static final String BACKGROUND_FILE = "MenuBackground.png";
+    public static final String MAP_FILE = "Maps\\FinalDaysMap.tmx";
+    public static final String PLAYER_IMAGE = "survivor-move_handgun_0.png";
+    public static final String ENEMY_IMAGE = "skeleton-idle_0.png";
+
     // Values used in collision and light filters
     public static final short ENTITY_PLAYER = 0x1;
     public static final short ENTITY_ENEMY = 0x1 << 1;

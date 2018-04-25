@@ -23,10 +23,6 @@ import com.itay347.finaldays.MyValues;
  * The main play screen of the game
  */
 public class PlayScreen extends ScreenAdapter {
-    public static final String MAP_FILE = "Maps\\FinalDaysMap.tmx";
-    public static final String PLAYER_IMAGE = "survivor-move_handgun_0.png";
-    public static final String ENEMY_IMAGE = "skeleton-idle_0.png";
-
     /**
      * A reference to the main game class
      */
@@ -95,14 +91,14 @@ public class PlayScreen extends ScreenAdapter {
      */
     public PlayScreen(FinalDays game) {
         this.game = game;
-        game.getAssetManager().load(PLAYER_IMAGE, Texture.class);
-        game.getAssetManager().load(ENEMY_IMAGE, Texture.class);
+        game.getAssetManager().load(MyValues.PLAYER_IMAGE, Texture.class);
+        game.getAssetManager().load(MyValues.ENEMY_IMAGE, Texture.class);
 
         drawBox2DDebug = false;
         enableLights = true;
 
         // Load the tiled map first
-        tiledMap = new TmxMapLoader().load(MAP_FILE);
+        tiledMap = new TmxMapLoader().load(MyValues.MAP_FILE);
         tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap);
         saveTileSize();
         findAndSaveWalls();
@@ -125,15 +121,15 @@ public class PlayScreen extends ScreenAdapter {
 
         // Init the Stage and add the player
         stage = new Stage();
-        game.getAssetManager().finishLoadingAsset(PLAYER_IMAGE);
+        game.getAssetManager().finishLoadingAsset(MyValues.PLAYER_IMAGE);
         int startX = 25;
         int startY = 25;
-        player = new Player(startX, startY, (Texture) game.getAssetManager().get(PLAYER_IMAGE), world, rayHandler);
+        player = new Player(startX, startY, (Texture) game.getAssetManager().get(MyValues.PLAYER_IMAGE), world, rayHandler);
         stage.addActor(player);
 
         // Add the enemies
-        game.getAssetManager().finishLoadingAsset(ENEMY_IMAGE);
-        enemy = new Enemy(25, 0, (Texture) game.getAssetManager().get(ENEMY_IMAGE), world);
+        game.getAssetManager().finishLoadingAsset(MyValues.ENEMY_IMAGE);
+        enemy = new Enemy(25, 0, (Texture) game.getAssetManager().get(MyValues.ENEMY_IMAGE), world);
         stage.addActor(enemy);
 
         // Init the AI manager

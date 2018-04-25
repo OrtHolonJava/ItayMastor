@@ -4,6 +4,7 @@ import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
+import com.itay347.finaldays.Screens.MenuScreen;
 import com.itay347.finaldays.Screens.PlayScreen;
 
 /**
@@ -18,12 +19,12 @@ public class FinalDays extends Game {
     /**
      * Init the game
      */
-	@Override
-	public void create() {
+    @Override
+    public void create() {
         Gdx.app.setLogLevel(Application.LOG_DEBUG);
         assetManager = new AssetManager();
-		setScreen(new PlayScreen(this));
-	}
+        setScreen(new MenuScreen(this));
+    }
 
     /**
      * Clears the resources when the game is closed
@@ -35,7 +36,6 @@ public class FinalDays extends Game {
     }
 
     /**
-     *
      * @return the asset manager
      */
     public AssetManager getAssetManager() {
